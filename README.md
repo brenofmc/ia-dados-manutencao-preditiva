@@ -1,11 +1,9 @@
-# ia-dados-manutencao-preditiva
-
 # Integração e Análise de Dados em Sistemas de Engenharia
 
-Projeto desenvolvido na disciplina **Inteligência Artificial e Programação para Engenharia**. Primeira de uma série de experiências práticas que percorrem o ciclo completo de análise de dados aplicada à engenharia: da coleta de dados de sensores até um agente de diagnóstico de manutenção e um dashboard interativo.
+Projeto desenvolvido na disciplina **Inteligência Artificial e Programação para Engenharia**. Série de experiências práticas que percorrem o ciclo completo de análise de dados aplicada à engenharia: da coleta de dados de sensores até um agente de diagnóstico de manutenção e um dashboard interativo.
 
 ## Objetivo
-Selecionar, caracterizar, classificar e tratar uma base de medições de sensores voltada à **manutenção preditiva** (Indústria 4.0), documentando cada decisão metodológica de forma reprodutível e auditável.
+Selecionar, caracterizar, tratar e analisar uma base de medições de sensores voltada à **manutenção preditiva** (Indústria 4.0), documentando cada decisão metodológica de forma reprodutível e auditável.
 
 ## Base de dados
 - **AI4I 2020 Predictive Maintenance Dataset** — UCI Machine Learning Repository
@@ -22,7 +20,11 @@ Selecionar, caracterizar, classificar e tratar uma base de medições de sensore
 | Torque | Mecânica (torque) | N·m |
 | Tool wear | Desgaste (tempo) | min |
 
-## Resumo estatístico (10.000 registros)
+## EP I — Coleta, classificação e documentação
+Seleção da base, dicionário de variáveis (metadados) e classificação física dos sensores.
+
+**Resumo estatístico (10.000 registros):**
+
 | Variável | Mín | Máx | Média | Desvio |
 |---|---|---|---|---|
 | Air temperature [K] | 295,30 | 304,50 | 300,00 | 2,00 |
@@ -31,17 +33,39 @@ Selecionar, caracterizar, classificar e tratar uma base de medições de sensore
 | Torque [Nm] | 3,80 | 76,60 | 39,99 | 9,97 |
 | Tool wear [min] | 0 | 253 | 107,95 | 63,65 |
 
-## Tratamento e limpeza
-- **Nulos:** verificados com `df.isnull().sum()` — nenhum nulo e nenhuma duplicata nos 10.000 registros.
-- **Outliers:** avaliados por IQR (1,5×). Rotação (418 pontos) e torque (69 pontos) além dos limites foram **mantidos**, por serem fisicamente coerentes e por representarem as condições extremas em que as falhas ocorrem — descartá-los enviesaria o modelo preditivo.
-- **Ordenação:** crescente pela coluna `UDI` (índice sequencial 1–10.000), preservando a ordem original de aquisição.
+**Tratamento e integridade:** verificação com `df.isnull().sum()` e `df.duplicated()` — nenhum nulo e nenhuma duplicata. Outliers avaliados por IQR (1,5×): rotação (418 pontos) e torque (69 pontos) foram **mantidos**, por representarem as condições extremas em que as falhas ocorrem.
+
+Script: `analise_ai4i.py`.
+
+## EP II — Análise, tratamento e visualização
+**Tratamento (Pandas/NumPy):** padronização de cabeçalhos para snake_case, conversão de `Type` para `category`, confirmação da integridade (base preservada, sem `dropna`/`fillna`) e criação de variáveis derivadas (diferença térmica e potência mecânica).
+
+**Análise exploratória (groupby por condição de falha):**
+
+| Variável | Sem falha | Com falha |
+|---|---|---|
+| Torque [N·m] | 39,63 | 50,17 |
+| Desgaste [min] | 106,69 | 143,78 |
+| Potência [W] | 6245 | 7283 |
+
+Taxa de falha global: **3,39%**. Por qualidade: L 3,92% · M 2,77% · H 2,09%.
+
+**Principais descobertas:** torque e desgaste são os discriminadores mais fortes da falha; a falha é um fenômeno combinado (torque × rotação próximo do limite de potência de 9000 W); a qualidade do produto modula o risco. Os outliers foram preservados por representarem o próprio sinal da falha.
+
+Script: `ep2_analise_ai4i.py`.
+
+### Visualizações
+![Boxplots de torque e desgaste por grupo](graficos/g1_boxplot.png)
+![Dispersão torque x rotação](graficos/g2_dispersao.png)
+![Histograma de torque por grupo](graficos/g3_histograma.png)
+![Taxa de falha por tipo](graficos/g4_taxa.png)
 
 ## Tecnologias
-Python 3 · Pandas
+Python 3 · Pandas · NumPy · Matplotlib
 
 ## Status do projeto
 - [x] EP I — Coleta, classificação e documentação
-- [ ] EP II — Análise e tratamento em Python
+- [x] EP II — Análise, tratamento e visualização
 - [ ] EP III — Agente inteligente de diagnóstico de manutenção
 - [ ] EP IV — Dashboard interativo
 
