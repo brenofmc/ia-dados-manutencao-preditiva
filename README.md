@@ -3,7 +3,7 @@
 Projeto desenvolvido na disciplina **Inteligência Artificial e Programação para Engenharia**. Série de experiências práticas que percorrem o ciclo completo de análise de dados aplicada à engenharia: da coleta de dados de sensores até um agente de diagnóstico de manutenção e um dashboard interativo.
 
 ## Objetivo
-Selecionar, caracterizar, tratar e analisar uma base de medições de sensores voltada à **manutenção preditiva** (Indústria 4.0), documentando cada decisão metodológica de forma reprodutível e auditável.
+Selecionar, caracterizar, tratar e analisar uma base de medições de sensores voltada à **manutenção preditiva** (Indústria 4.0), culminando em um agente inteligente de diagnóstico, documentando cada decisão de forma reprodutível e auditável.
 
 ## Base de dados
 - **AI4I 2020 Predictive Maintenance Dataset** — UCI Machine Learning Repository
@@ -60,13 +60,25 @@ Script: `ep2_analise_ai4i.py`.
 ![Histograma de torque por grupo](graficos/g3_histograma.png)
 ![Taxa de falha por tipo](graficos/g4_taxa.png)
 
+## EP III — Agente inteligente de diagnóstico
+Projeto de um agente de manutenção preditiva baseado em LLM, com arquitetura em quatro camadas (ingestão → tratamento → inferência → saída).
+
+**Limiares de decisão (derivados dos dados):** a análise identificou uma região crítica combinada — torque ≥ 48 N·m **e** desgaste ≥ 200 min — com **42,4% de falha**, contra 3,39% da base geral (~12× o risco médio). O agente avalia as variáveis de forma cruzada, superando limites estáticos isolados, e classifica o estado em três níveis (NORMAL / ATENÇÃO / CRÍTICO) com recomendação prescritiva.
+
+O system prompt do agente está em `system_prompt_agente.md`.
+
+### Arquitetura e análise de decisão
+![Arquitetura do agente](graficos/arquitetura_agente.png)
+![Região crítica de decisão](graficos/g5_regiao_critica.png)
+![Matriz de correlação por condição](graficos/g6_pairplot.png)
+
 ## Tecnologias
-Python 3 · Pandas · NumPy · Matplotlib
+Python 3 · Pandas · NumPy · Matplotlib · Seaborn
 
 ## Status do projeto
 - [x] EP I — Coleta, classificação e documentação
 - [x] EP II — Análise, tratamento e visualização
-- [ ] EP III — Agente inteligente de diagnóstico de manutenção
+- [x] EP III — Agente inteligente de diagnóstico de manutenção
 - [ ] EP IV — Dashboard interativo
 
 ---
